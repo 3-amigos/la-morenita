@@ -10,6 +10,8 @@ public class Check {
 	private int routingNum;
 	private Calendar checkDate;
 	
+	Check(){}
+	}
 	
 	Check(int chk_id, float amount, int checkNum, int routingNum, Calendar chkDate){
 		this.check_ID = chk_id;

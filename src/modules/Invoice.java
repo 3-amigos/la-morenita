@@ -11,6 +11,8 @@ public class Invoice {
 	private Customer customer;
 	private User usr;
 	
+	Invoice(){}
+	
 	Invoice(int inv_id, Calendar date, ArrayList<Check> checks, Customer cstmr, User usr){
 		this.invoice_id = inv_id;
 		this.date = date; 
