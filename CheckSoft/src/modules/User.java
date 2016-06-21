@@ -5,7 +5,8 @@ public class User {
 	private String name;
 	private String password;
 	
-	
+	public User() {usr_ID=0;}
+        
 	public User(User usr){
 		this.usr_ID = usr.getUsr_ID();
 		this.name = usr.getName();
