@@ -8,9 +8,11 @@
  * 
  */
 package gui;
+import db.DbConnect;
 import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
+import java.sql.*;
 
 /**
  *
@@ -28,8 +30,8 @@ public class Login extends JFrame implements ActionListener {
     private JLabel pwdLbl;
     
     //text fields for username and password
-    private JTextField usrTxt;
-    private JPasswordField pwdTxt;
+    private JTextField usrTxtField;
+    private JPasswordField pwdTxtField;
    
     //panels for buttons and for credentials
     private JPanel BtnPanel;
@@ -39,14 +41,17 @@ public class Login extends JFrame implements ActionListener {
     public static final int WIDTH = 400;
     public static final int HEIGHT = 200;
     
+    //Database functions
+    DbConnect databaseManager = null;
     /*
      * Login
      * 
      * Constructs a window by initializing swing components and displaying them
      *
      */
-    public Login() {
+    public Login(DbConnect db) {
         super("Inicio");
+        databaseManager = db;
         setWindow();
         initComponents();
         setComponentText();
@@ -88,8 +93,11 @@ public class Login extends JFrame implements ActionListener {
     }
     
     private void initFields() {
-        usrTxt = new JTextField();
-        pwdTxt = new JPasswordField();
+        usrTxtField = new JTextField();
+        pwdTxtField = new JPasswordField();
+        
+        Font defaultFont = usrTxtField.getFont().deriveFont(Font.PLAIN, 11f);
+        usrTxtField.setFont(defaultFont);
     }
     
     private void initPanels() {
@@ -103,6 +111,8 @@ public class Login extends JFrame implements ActionListener {
         usrLbl.setText("Username");
         pwdLbl.setText("Password");
         titleLbl.setText("Login to Check-Soft Prime");
+        
+        loginBtn.setActionCommand("Login");
     }
     
     private void addActionListeners() {
@@ -124,9 +134,9 @@ public class Login extends JFrame implements ActionListener {
         BtnPanel.add(loginBtn);
         BtnPanel.add(exitBtn); 
         credentialsPanel.add(usrLbl);
-        credentialsPanel.add(usrTxt);
+        credentialsPanel.add(usrTxtField);
         credentialsPanel.add(pwdLbl);
-        credentialsPanel.add(pwdTxt);
+        credentialsPanel.add(pwdTxtField);
     }
     
     private void addComponentsToFrame() {
@@ -139,16 +149,32 @@ public class Login extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("Exit")){            
             System.exit(0);
-        } else if (e.getActionCommand().equals("Login")) {
-            /*
-            TODO: query db for user & verify credentials
+        } else if (e.getActionCommand().equals("Login")) {            
+            String username = usrTxtField.getText();
+            String password = String.copyValueOf(pwdTxtField.getPassword());
+            if(verifyLogin(username, password)){
+                Dashboard dba = new Dashboard();    
+            }
+            else {
+                 JOptionPane.showMessageDialog(null,"Username or Password is incorrect");
+            }
             
-            */
-            
-            System.out.println(usrTxt.getText());
-            System.out.println(pwdTxt.getText());
         } else {
-            System.err.println("Error: invalid command " + e.getActionCommand());
+            System.err.println("actionPerformed error: " + e.getActionCommand());
+        }
+    }
+    
+    private boolean verifyLogin(String u, String p) {
+        /*
+        TODO:
+        QUERY DATABSE AND EXECUTE STATEMENTS
+        */
+        try {
+            databaseManager.queryUser(u, p);
+            return true;
+        } catch(Exception e) {
+            System.err.println("verifyLogin error: "+e.getMessage());
+            return false;
         }
     }
     
